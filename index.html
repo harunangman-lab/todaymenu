@@ -20,6 +20,11 @@
     <section class="month-bar" aria-label="월 선택"><label class="month-label" for="month">어느 계절의 맛을 만나볼까요?<small>월을 선택하면 제철 재료를 알려드려요.</small></label><select id="month" disabled></select></section>
     <section aria-labelledby="ingredients-title"><div class="section-top"><h2 id="ingredients-title">이달의 제철 재료</h2><span class="subtle">재료를 눌러 레시피를 찾아보세요</span></div><div id="ingredients" class="ingredients"></div></section>
     <section class="recipes-section" aria-labelledby="recipes-title"><div class="section-top"><h2 id="recipes-title">제철 레시피 <span id="count" class="count">0</span></h2><span id="filter-label" class="subtle"></span></div><div id="status" class="status" role="status" aria-live="polite">제철 식탁을 준비하고 있어요…</div><div id="recipes" class="grid"></div><div id="empty" class="empty" hidden><span aria-hidden="true">♧</span><strong>아직 준비된 레시피가 없어요</strong><p>다른 제철 재료나 다른 월을 선택해 보세요.</p><button id="reset" class="reset" type="button">이달의 레시피 전체 보기</button></div><div class="pagination"><button id="more" class="more" type="button" hidden>레시피 더 보기 ↓</button></div></section>
+    <section id="extra-section" class="recipes-section" aria-labelledby="extra-title" hidden>
+      <div class="section-top"><h2 id="extra-title">이런 메뉴는 어때요? <span id="extra-count" class="count">5</span></h2><span class="subtle">랜덤 추가 추천</span></div>
+      <p id="extra-note" class="intro" style="margin-bottom:20px"></p>
+      <div id="extra-recipes" class="grid"></div>
+    </section>
   </main>
   <footer><span>오늘 뭐먹지? · 제철의 맛을 일상으로</span><span>제철 정보와 레시피는 제공된 식단 데이터를 기준으로 안내합니다.</span></footer>
   <dialog id="recipe-dialog" class="recipe-dialog" aria-labelledby="dialog-title">
@@ -29,7 +34,7 @@
   <script>
     'use strict';
     const $ = id => document.getElementById(id);
-    const state = { data:null, month:new Date().getMonth()+1, ingredient:null, visible:12, matches:[] };
+    const state = { data:null, month:new Date().getMonth()+1, ingredient:null, visible:12, matches:[], extrasByMonth:new Map() };
     const clean = value => String(value ?? '').replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'');
     function element(tag, className, text) { const el=document.createElement(tag); if(className) el.className=className; if(text!==undefined) el.textContent=clean(text); return el; }
     for(let month=1; month<=12; month++) { const option=element('option','',month+'월'); option.value=month; $('month').append(option); }
@@ -41,11 +46,11 @@
       $('ingredients').replaceChildren(fragment);
       $('ingredients-title').textContent=state.month+'월의 제철 재료';
     }
-    function createCard(recipe) {
+    function createCard(recipe, extra=false) {
       const card=element('article','card');
       const photo=element('div','photo'); photo.append(element('span','fallback','사진을 준비하고 있어요'));
       if(recipe.image) { const img=element('img'); img.alt=clean(recipe.name); img.loading='lazy'; img.decoding='async'; img.referrerPolicy='no-referrer'; img.addEventListener('error',()=>{img.remove();photo.querySelector('.fallback').textContent='사진을 불러올 수 없어요';},{once:true}); img.src=recipe.image; photo.append(img); }
-      photo.append(element('span','badge',state.month+'월 제철'));card.append(photo);
+      photo.append(element('span','badge',extra ? '랜덤 추가 추천' : state.month+'월 제철'));card.append(photo);
       const body=element('div','card-body'), meta=element('div','meta');
       meta.append(element('span','',recipe.category || '요리'),element('span','',recipe.method || '기타'));
       body.append(meta,element('h3','',recipe.name));
@@ -73,11 +78,31 @@
     }
     $('dialog-x').addEventListener('click',()=>$('recipe-dialog').close());
     $('recipe-dialog').addEventListener('close',()=>{document.body.classList.remove('modal-open');$('dialog-content').replaceChildren();if(recipeOpener?.isConnected)recipeOpener.focus({preventScroll:true});recipeOpener=null;});
+    function renderExtras() {
+      const monthly=state.data.recipes.filter(recipe=>recipe.months.includes(state.month));
+      $('extra-section').hidden=monthly.length>15;
+      if(monthly.length>15){$('extra-recipes').replaceChildren();return;}
+      if(!state.extrasByMonth.has(state.month)){
+        const excluded=new Set(monthly.map(recipe=>recipe.id));
+        const seen=new Set();
+        const pool=state.data.recipes.filter(recipe=>{
+          if(excluded.has(recipe.id)||seen.has(recipe.id)) return false;
+          seen.add(recipe.id);return true;
+        });
+        for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+        state.extrasByMonth.set(state.month,pool.slice(0,5));
+      }
+      const extras=state.extrasByMonth.get(state.month);
+      $('extra-count').textContent=extras.length;
+      $('extra-note').textContent=state.month+'월의 제철 메뉴가 '+monthly.length+'개라, 다른 계절의 메뉴도 '+extras.length+'개 골라봤어요. 추가 추천은 재료 필터와 관계없이 보여드려요.';
+      $('extra-recipes').replaceChildren(...extras.map(recipe=>createCard(recipe,true)));
+    }
     function renderRecipes() {
       state.matches=state.data.recipes.filter(recipe=>recipe.months.includes(state.month) && (!state.ingredient || recipe.seasonal.includes(state.ingredient)));
       $('count').textContent=state.matches.length;
       $('filter-label').textContent=state.month+'월 · '+(state.ingredient || '모든 제철 재료');
-      $('recipes').replaceChildren(...state.matches.slice(0,state.visible).map(createCard));
+      $('recipes').replaceChildren(...state.matches.slice(0,state.visible).map(recipe=>createCard(recipe)));
+      renderExtras();
       $('empty').hidden=state.matches.length>0;
       $('more').hidden=state.visible>=state.matches.length;
       $('more').textContent='레시피 더 보기 ('+Math.min(state.visible,state.matches.length)+' / '+state.matches.length+') ↓';
