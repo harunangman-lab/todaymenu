@@ -17,6 +17,12 @@
       <div><p class="eyebrow">SEASONAL TABLE</p><h1 id="hero-title">오늘의 고민,<br><span>제철 한 끼</span>로 가볍게.</h1><p class="intro">지금 가장 맛있는 재료로, 오늘의 식탁을 채워보세요.</p></div>
       <svg class="season-art" viewBox="0 0 220 180" aria-hidden="true"><ellipse cx="113" cy="153" rx="86" ry="13" fill="#e4e9da"/><circle cx="113" cy="87" r="72" fill="#e9eedf"/><path d="M63 113C40 82 59 44 88 42c21 29 15 59-25 71" fill="#8fa87b"/><path d="M65 122 80 62" fill="none" stroke="#f6f7f2" stroke-width="2"/><path d="M105 106c-8-44 17-67 51-65 8 38-15 64-51 65" fill="#4f7950"/><path d="m102 128 36-68" fill="none" stroke="#e8eddd" stroke-width="2"/><path d="M119 123c-3-31 22-48 50-37 4 29-20 46-50 37" fill="#a6b98b"/><path d="m113 134 39-33" fill="none" stroke="#f6f7f2" stroke-width="2"/><path d="M60 121h114c-4 22-25 36-57 36s-53-14-57-36" fill="#efe9db"/><path d="M59 121h116" stroke="#c9bea8" stroke-width="3" stroke-linecap="round"/><circle cx="39" cy="62" r="4" fill="#c7ae71"/><path d="m176 33 3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#b8c59e"/></svg>
     </section>
+    <section id="today-section" aria-labelledby="today-title" hidden style="margin-bottom:36px">
+      <div class="section-top" style="margin-top:0"><h2 id="today-title">오늘의 랜덤 추천메뉴</h2><button id="today-refresh" class="chip" type="button">다시 추천받기 ↻</button></div>
+      <p id="today-note" class="intro" style="margin-bottom:20px"></p>
+      <div id="today-recipes" class="grid"></div>
+      <p id="today-status" class="sr-only" role="status" aria-live="polite"></p>
+    </section>
     <section class="month-bar" aria-label="월 선택"><label class="month-label" for="month">어느 계절의 맛을 만나볼까요?<small>월을 선택하면 제철 재료를 알려드려요.</small></label><select id="month" disabled></select></section>
     <section aria-labelledby="ingredients-title"><div class="section-top"><h2 id="ingredients-title">이달의 제철 재료</h2><span class="subtle">재료를 눌러 레시피를 찾아보세요</span></div><div id="ingredients" class="ingredients"></div></section>
     <section class="recipes-section" aria-labelledby="recipes-title"><div class="section-top"><h2 id="recipes-title">제철 레시피 <span id="count" class="count">0</span></h2><span id="filter-label" class="subtle"></span></div><div id="status" class="status" role="status" aria-live="polite">제철 식탁을 준비하고 있어요…</div><div id="recipes" class="grid"></div><div id="empty" class="empty" hidden><span aria-hidden="true">♧</span><strong>아직 준비된 레시피가 없어요</strong><p>다른 제철 재료나 다른 월을 선택해 보세요.</p><button id="reset" class="reset" type="button">이달의 레시피 전체 보기</button></div><div class="pagination"><button id="more" class="more" type="button" hidden>레시피 더 보기 ↓</button></div></section>
@@ -34,7 +40,7 @@
   <script>
     'use strict';
     const $ = id => document.getElementById(id);
-    const state = { data:null, month:new Date().getMonth()+1, ingredient:null, visible:12, matches:[], extrasByMonth:new Map() };
+    const state = { data:null, month:new Date().getMonth()+1, ingredient:null, visible:12, matches:[], extrasByMonth:new Map(), today:[] };
     const clean = value => String(value ?? '').replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'');
     function element(tag, className, text) { const el=document.createElement(tag); if(className) el.className=className; if(text!==undefined) el.textContent=clean(text); return el; }
     for(let month=1; month<=12; month++) { const option=element('option','',month+'월'); option.value=month; $('month').append(option); }
@@ -50,13 +56,13 @@
       const card=element('article','card');
       const photo=element('div','photo'); photo.append(element('span','fallback','사진을 준비하고 있어요'));
       if(recipe.image) { const img=element('img'); img.alt=clean(recipe.name); img.loading='lazy'; img.decoding='async'; img.referrerPolicy='no-referrer'; img.addEventListener('error',()=>{img.remove();photo.querySelector('.fallback').textContent='사진을 불러올 수 없어요';},{once:true}); img.src=recipe.image; photo.append(img); }
-      photo.append(element('span','badge',extra ? '랜덤 추가 추천' : state.month+'월 제철'));card.append(photo);
+      photo.append(element('span','badge',extra==='today' ? '오늘의 랜덤 추천' : extra ? '랜덤 추가 추천' : state.month+'월 제철'));card.append(photo);
       const body=element('div','card-body'), meta=element('div','meta');
       meta.append(element('span','',recipe.category || '요리'),element('span','',recipe.method || '기타'));
       body.append(meta,element('h3','',recipe.name));
       const tags=element('div','tags');
       const monthNames=new Set(state.data.seasonal.filter(s=>s.month===state.month).map(s=>s.name));
-      recipe.seasonal.filter(name=>monthNames.has(name)).forEach(name=>tags.append(element('span','tag',name)));
+      recipe.seasonal.filter(name=>extra==='today' || monthNames.has(name)).forEach(name=>tags.append(element('span','tag',name)));
       body.append(tags);
       body.append(element('p','card-cta','재료와 만드는 법 보기 ↗'));
       const open=element('button','card-open');open.type='button';open.setAttribute('aria-label',clean(recipe.name)+' 레시피 자세히 보기');open.setAttribute('aria-haspopup','dialog');
@@ -78,6 +84,20 @@
     }
     $('dialog-x').addEventListener('click',()=>$('recipe-dialog').close());
     $('recipe-dialog').addEventListener('close',()=>{document.body.classList.remove('modal-open');$('dialog-content').replaceChildren();if(recipeOpener?.isConnected)recipeOpener.focus({preventScroll:true});recipeOpener=null;});
+    function recommendToday() {
+      if(!state.data) return;
+      const previous=new Set(state.today.map(recipe=>recipe.id));
+      const unique=[...new Map(state.data.recipes.map(recipe=>[recipe.id,recipe])).values()];
+      const fresh=unique.filter(recipe=>!previous.has(recipe.id));
+      const pool=fresh.length>=Math.min(3,unique.length) ? fresh : unique;
+      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+      state.today=pool.slice(0,3);
+      $('today-section').hidden=state.today.length===0;
+      $('today-note').textContent=new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'})+' · 오늘은 뭘 먹을까요? 월과 재료에 관계없이 전체 메뉴에서 골랐어요.';
+      $('today-recipes').replaceChildren(...state.today.map(recipe=>createCard(recipe,'today')));
+      $('today-status').textContent='오늘의 추천 메뉴: '+state.today.map(recipe=>recipe.name).join(', ');
+    }
+    $('today-refresh').addEventListener('click',recommendToday);
     function renderExtras() {
       const monthly=state.data.recipes.filter(recipe=>recipe.months.includes(state.month));
       $('extra-section').hidden=monthly.length>15;
@@ -119,7 +139,7 @@
         if(!response.ok) throw new Error('HTTP '+response.status);
         const data=await response.json();
         if(!Array.isArray(data.seasonal)||!Array.isArray(data.recipes)||data.recipes.some(r=>!Array.isArray(r.months)||!Array.isArray(r.seasonal))) throw new Error('잘못된 데이터 구조');
-        state.data=data;$('month').disabled=false;renderIngredients();renderRecipes();
+        state.data=data;$('month').disabled=false;renderIngredients();renderRecipes();recommendToday();
       } catch(error) {
         $('status').className='status error';$('status').replaceChildren(element('p','','식단 데이터를 불러오지 못했어요. 로컬 서버에서 페이지를 열고, 같은 폴더에 menu.json이 있는지 확인해 주세요.'));
         const retry=element('button','retry','다시 불러오기');retry.type='button';retry.addEventListener('click',loadData);$('status').append(retry);
