@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f7f2">
+  <title>오늘 뭐먹지? · 제철 식단 추천</title>
+  <style>
+    :root{--ink:#27382d;--muted:#738077;--green:#386c45;--line:#e1e6dc;--paper:#f6f7f2}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR",system-ui,sans-serif;line-height:1.6}button,select{font:inherit}button,select,summary{cursor:pointer}button:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #b08738;outline-offset:4px}header{border-bottom:1px solid var(--line)}.nav{max-width:1160px;margin:auto;padding:22px 28px;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-1px}.logo{display:grid;place-items:center;width:33px;height:33px;background:var(--green);border-radius:11px;color:white}.nav-note{font-size:12px;letter-spacing:1.5px;color:var(--muted)}main{max-width:1160px;margin:auto;padding:0 28px}.hero{display:flex;justify-content:space-between;align-items:center;padding:56px 0 40px;gap:24px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--green);margin:0 0 12px}h1{font-size:clamp(32px,4vw,47px);line-height:1.35;letter-spacing:-2px;margin:0 0 16px;font-weight:750}h1 span{color:var(--green)}.intro{font-size:14px;color:var(--muted);margin:0}.season-art{width:210px;height:160px;flex-shrink:0}.month-bar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:21px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}.month-label{font-weight:700;font-size:15px}.month-label small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:2px}select{background:#f8f9f5;border:1px solid #d7dfd2;border-radius:8px;padding:9px 38px 9px 15px;color:var(--ink);min-width:142px}.section-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:34px 0 16px}h2{font-size:20px;letter-spacing:-.7px;margin:0}.subtle{font-size:12px;color:var(--muted)}.ingredients{display:flex;flex-wrap:wrap;gap:9px}.chip{border:1px solid #dce3d6;border-radius:100px;padding:9px 19px;background:white;color:#59675a;font-size:13px;transition:background .15s,border-color .15s}.chip:hover{background:#e9eee3;border-color:#9bae93}.chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:white}.recipes-section{margin-top:39px;border-top:1px solid var(--line);padding-top:27px}.recipes-section .section-top{margin:0 0 20px}.selection{color:var(--green)}.count{display:inline-block;font-size:12px;vertical-align:middle;background:#e6ecdf;color:var(--green);border-radius:6px;padding:1px 7px;margin-left:7px;letter-spacing:0}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.card{overflow:hidden;background:white;border:1px solid var(--line);border-radius:14px;transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px #27382d0a}.photo{aspect-ratio:1.65;background:#e9eddf;position:relative;overflow:hidden;display:grid;place-items:center}.photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.photo .fallback{color:#7d8a72;font-size:13px}.badge{position:absolute;bottom:12px;left:14px;background:#fffffff0;border-radius:5px;font-size:11px;padding:3px 9px;color:var(--green)}.card-body{padding:19px 20px 20px}.meta{font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center}.meta span+span:before{content:'·';margin-right:8px}h3{font-size:17px;letter-spacing:-.5px;line-height:1.5;margin:8px 0 12px}.tags{display:flex;flex-wrap:wrap;gap:5px;min-height:24px}.tag{font-size:11px;color:#6c7c60;background:#f1f4ec;border-radius:4px;padding:2px 7px}.card details{margin-top:16px;padding-top:12px;border-top:1px solid #edf0e9;font-size:12px;color:#64705e}.card summary{font-weight:600;color:var(--green)}.detail-text{white-space:pre-line;overflow-wrap:anywhere}.card ol{padding-left:19px}.card li{margin:7px 0}.detail-heading{font-weight:700;color:var(--ink);margin:15px 0 5px}.empty{padding:58px 20px;text-align:center;border:1px dashed #d2dccb;border-radius:14px;color:var(--muted);background:#fff}.empty strong{display:block;font-size:18px;color:var(--ink);margin:8px}.empty p{margin:6px 0;font-size:13px}.reset,.retry,.more{background:white;border:1px solid #cfd9c7;color:var(--green);padding:9px 19px;border-radius:8px;margin-top:15px}.pagination{text-align:center;margin:28px 0}.more{margin:0;min-width:200px}.status{font-size:13px;color:var(--muted);padding:24px 0}.error{color:#975136}footer{max-width:1104px;margin:50px auto 0;padding:22px 0 28px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;color:#8a9385;gap:16px} [hidden]{display:none!important}@media(min-width:1000px){.hero{padding-right:60px}}@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.hero{padding:36px 0 28px}.season-art{width:145px;height:130px}.nav-note{display:none}footer{margin-left:28px;margin-right:28px}}@media(max-width:500px){main{padding:0 20px}.nav{padding:18px 20px}.hero{gap:0}.season-art{width:90px;height:110px}h1{font-size:30px;letter-spacing:-1.6px}.intro{font-size:12px}.month-bar{padding:16px}.month-label{font-size:13px}select{min-width:110px;padding-right:20px}.grid{grid-template-columns:1fr}.section-top{align-items:flex-start}.section-top .subtle{font-size:11px}.chip{padding:8px 16px}footer{flex-direction:column;margin-left:20px;margin-right:20px;gap:4px}}
+  </style>
+</head>
+<body>
+  <header><div class="nav"><div class="brand"><span class="logo" aria-hidden="true">♧</span>오늘 뭐먹지?</div><span class="nav-note">계절을 담은 한 끼, 일상의 작은 즐거움</span></div></header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div><p class="eyebrow">SEASONAL TABLE</p><h1 id="hero-title">오늘의 고민,<br><span>제철 한 끼</span>로 가볍게.</h1><p class="intro">지금 가장 맛있는 재료로, 오늘의 식탁을 채워보세요.</p></div>
+      <svg class="season-art" viewBox="0 0 220 180" aria-hidden="true"><ellipse cx="113" cy="153" rx="86" ry="13" fill="#e4e9da"/><circle cx="113" cy="87" r="72" fill="#e9eedf"/><path d="M63 113C40 82 59 44 88 42c21 29 15 59-25 71" fill="#8fa87b"/><path d="M65 122 80 62" fill="none" stroke="#f6f7f2" stroke-width="2"/><path d="M105 106c-8-44 17-67 51-65 8 38-15 64-51 65" fill="#4f7950"/><path d="m102 128 36-68" fill="none" stroke="#e8eddd" stroke-width="2"/><path d="M119 123c-3-31 22-48 50-37 4 29-20 46-50 37" fill="#a6b98b"/><path d="m113 134 39-33" fill="none" stroke="#f6f7f2" stroke-width="2"/><path d="M60 121h114c-4 22-25 36-57 36s-53-14-57-36" fill="#efe9db"/><path d="M59 121h116" stroke="#c9bea8" stroke-width="3" stroke-linecap="round"/><circle cx="39" cy="62" r="4" fill="#c7ae71"/><path d="m176 33 3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#b8c59e"/></svg>
+    </section>
+    <section class="month-bar" aria-label="월 선택"><label class="month-label" for="month">어느 계절의 맛을 만나볼까요?<small>월을 선택하면 제철 재료를 알려드려요.</small></label><select id="month" disabled></select></section>
+    <section aria-labelledby="ingredients-title"><div class="section-top"><h2 id="ingredients-title">이달의 제철 재료</h2><span class="subtle">재료를 눌러 레시피를 찾아보세요</span></div><div id="ingredients" class="ingredients"></div></section>
+    <section class="recipes-section" aria-labelledby="recipes-title"><div class="section-top"><h2 id="recipes-title">제철 레시피 <span id="count" class="count">0</span></h2><span id="filter-label" class="subtle"></span></div><div id="status" class="status" role="status" aria-live="polite">제철 식탁을 준비하고 있어요…</div><div id="recipes" class="grid"></div><div id="empty" class="empty" hidden><span aria-hidden="true">♧</span><strong>아직 준비된 레시피가 없어요</strong><p>다른 제철 재료나 다른 월을 선택해 보세요.</p><button id="reset" class="reset" type="button">이달의 레시피 전체 보기</button></div><div class="pagination"><button id="more" class="more" type="button" hidden>레시피 더 보기 ↓</button></div></section>
+  </main>
+  <footer><span>오늘 뭐먹지? · 제철의 맛을 일상으로</span><span>제철 정보와 레시피는 제공된 식단 데이터를 기준으로 안내합니다.</span></footer>
+  <script>
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const state = { data:null, month:new Date().getMonth()+1, ingredient:null, visible:12, matches:[] };
+    const clean = value => String(value ?? '').replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'');
+    function element(tag, className, text) { const el=document.createElement(tag); if(className) el.className=className; if(text!==undefined) el.textContent=clean(text); return el; }
+    for(let month=1; month<=12; month++) { const option=element('option','',month+'월'); option.value=month; $('month').append(option); }
+    $('month').value=state.month;
+    function renderIngredients() {
+      const names=[...new Set(state.data.seasonal.filter(item=>item.month===state.month).map(item=>item.name))];
+      const fragment=document.createDocumentFragment();
+      [null,...names].forEach(name=>{ const button=element('button','chip',name ?? '전체'); button.type='button'; button.setAttribute('aria-pressed',String(state.ingredient===name)); button.addEventListener('click',()=>{state.ingredient=name;state.visible=12;renderIngredients();renderRecipes();}); fragment.append(button); });
+      $('ingredients').replaceChildren(fragment);
+      $('ingredients-title').textContent=state.month+'월의 제철 재료';
+    }
+    function createCard(recipe) {
+      const card=element('article','card');
+      const photo=element('div','photo'); photo.append(element('span','fallback','사진을 준비하고 있어요'));
+      if(recipe.image) { const img=element('img'); img.alt=clean(recipe.name); img.loading='lazy'; img.decoding='async'; img.referrerPolicy='no-referrer'; img.addEventListener('error',()=>{img.remove();photo.querySelector('.fallback').textContent='사진을 불러올 수 없어요';},{once:true}); img.src=recipe.image; photo.append(img); }
+      photo.append(element('span','badge',state.month+'월 제철'));card.append(photo);
+      const body=element('div','card-body'), meta=element('div','meta');
+      meta.append(element('span','',recipe.category || '요리'),element('span','',recipe.method || '기타'));
+      body.append(meta,element('h3','',recipe.name));
+      const tags=element('div','tags');
+      const monthNames=new Set(state.data.seasonal.filter(s=>s.month===state.month).map(s=>s.name));
+      recipe.seasonal.filter(name=>monthNames.has(name)).forEach(name=>tags.append(element('span','tag',name)));
+      body.append(tags);
+      const details=element('details'), summary=element('summary','','재료와 만드는 법'); details.append(summary);
+      details.append(element('p','detail-heading','재료'),element('p','detail-text',recipe.ingredients_text || '등록된 재료 정보가 없습니다.'));
+      if(recipe.steps?.length) { details.append(element('p','detail-heading','만드는 법'));const steps=element('ol');recipe.steps.forEach(step=>steps.append(element('li','',step)));details.append(steps); }
+      body.append(details);card.append(body);return card;
+    }
+    function renderRecipes() {
+      state.matches=state.data.recipes.filter(recipe=>recipe.months.includes(state.month) && (!state.ingredient || recipe.seasonal.includes(state.ingredient)));
+      $('count').textContent=state.matches.length;
+      $('filter-label').textContent=state.month+'월 · '+(state.ingredient || '모든 제철 재료');
+      $('recipes').replaceChildren(...state.matches.slice(0,state.visible).map(createCard));
+      $('empty').hidden=state.matches.length>0;
+      $('more').hidden=state.visible>=state.matches.length;
+      $('more').textContent='레시피 더 보기 ('+Math.min(state.visible,state.matches.length)+' / '+state.matches.length+') ↓';
+      $('status').textContent=state.matches.length ? (state.ingredient ? state.ingredient+'을(를) 활용한 ' : state.month+'월에 어울리는 ')+state.matches.length+'개의 레시피를 찾았어요.' : '선택한 조건에 맞는 레시피가 없습니다.';
+      $('status').hidden=state.matches.length>0;
+    }
+    $('month').addEventListener('change',()=>{state.month=Number($('month').value);state.ingredient=null;state.visible=12;renderIngredients();renderRecipes();});
+    $('reset').addEventListener('click',()=>{state.ingredient=null;state.visible=12;renderIngredients();renderRecipes();});
+    $('more').addEventListener('click',()=>{const previous=state.visible;state.visible+=12;renderRecipes();const first=$('recipes').children[previous];if(first){first.querySelector('summary').focus({preventScroll:true});first.scrollIntoView({behavior:'smooth',block:'nearest'});}});
+    async function loadData() {
+      $('status').hidden=false;$('status').className='status';$('status').textContent='제철 식탁을 준비하고 있어요…';
+      try {
+        const response=await fetch('./menu.json');
+        if(!response.ok) throw new Error('HTTP '+response.status);
+        const data=await response.json();
+        if(!Array.isArray(data.seasonal)||!Array.isArray(data.recipes)||data.recipes.some(r=>!Array.isArray(r.months)||!Array.isArray(r.seasonal))) throw new Error('잘못된 데이터 구조');
+        state.data=data;$('month').disabled=false;renderIngredients();renderRecipes();
+      } catch(error) {
+        $('status').className='status error';$('status').replaceChildren(element('p','','식단 데이터를 불러오지 못했어요. 로컬 서버에서 페이지를 열고, 같은 폴더에 menu.json이 있는지 확인해 주세요.'));
+        const retry=element('button','retry','다시 불러오기');retry.type='button';retry.addEventListener('click',loadData);$('status').append(retry);
+        console.error('식단 데이터 로드 실패:',error);
+      }
+    }
+    loadData();
+  </script>
+</body>
+</html>
